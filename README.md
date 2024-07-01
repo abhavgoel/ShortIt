@@ -1,4 +1,4 @@
-# URL-shortner
+# ShortIt - a URL shortening service
 
 Design a URL shortner service that takes a valid url and returns a shortened URL, redirecting user to the previous URL.
 
