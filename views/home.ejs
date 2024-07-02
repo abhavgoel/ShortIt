@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+    </style>
+    <title>Home page</title>
+</head>
+<body>
+    <h1>ShortIt - A URL shortening service</h1>
+    <% if (locals.id) { %>
+        <p>URL generated: http://localhost:8001/<%= locals.id %></p>
+    <% } %>
+    <div>
+        <form method = "POST" action="/url">
+            <label>
+                Enter your original URL 
+                <input type="text" placeholder="https://example.com" name="url">
+                <button type="submit">Generate</button>
+            </label>
+        </form>
+    </div>
+
+    <div>
+        <% if (locals.urls) { %>
+            <table>
+                <tr>
+                    <th>S. No.</th>
+                    <th>Shortened_URL</th>
+                    <th>Redirect_URL</th>
+                    <th>Clicks</th>
+                </tr>
+
+                <% for( let index = 0; index < urls.length; index++ ) { %>
+                    <tr>
+                        <td> <%= index+1 %> </td>
+                        <td> <%= urls[index].shortenedUrl %> </td>
+                        <td> <%= urls[index].redirectUrl %> </td>
+                        <td> <%= urls[index].visitHistory.length %> </td>
+                    </tr>
+                <% } %>
+            </table>
+        <% } %>
+        
+    </div>
+</body>
+</html>

@@ -1,6 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const urlRoute = require("./routes/url")
+const staticRoute = require("./routes/staticRouter");
+const path = require("path");
 
 const URL = require("./models/url")
 
@@ -16,9 +18,16 @@ connectToMongoDb("mongodb://127.0.0.1:27017/short-url").then(() => {
 });
 
 app.use(express.json()); //middleware to parse body
+app.use(express.urlencoded({extended :false})); //to parse form data
 app.use(logReqRes("serverlog.txt"));
 
+//EJS s(etup
+app.set('view engine', 'ejs');
+app.set('views', path.resolve("./views"));
+
 app.use("/url" , urlRoute); //url router
+
+app.use("/",staticRoute);
 
 app.get("/:shortId" , async (req,res) => {
     const shortId = req.params.shortId;
