@@ -24,7 +24,7 @@ async function restricToLoggedInUserOnly(req,res,next) {
     next();
 }
 
-async function checkAuth(req,res,next) {
+async function checkAuth(req,res,next) {//using it to attach user to the reqesut and pass it forward
     const userUid = req.cookies.uid;
    
     const user = getUser(userUid);

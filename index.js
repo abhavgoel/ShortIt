@@ -32,6 +32,8 @@ app.use("/url",restricToLoggedInUserOnly, urlRoute);
 app.use("/", checkAuth, staticRoute);
 app.use("/user", userRoute);
 
+//The order here matters, to specify the routes. If I define the below route above, it will clash - if I send a request to localhost/login if this route was specified above
+//then the server will log it as a request to shortened URL, so this should stay below all other routes
 //----------------------------------------------------------------------------GET route to redirect to original URL----------------------------------------------------
 app.get("/:shortId" , async (req,res) => {
     const shortId = req.params.shortId;

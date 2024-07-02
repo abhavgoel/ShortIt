@@ -9,7 +9,6 @@ async function handleUserSignUp(req, res) {
         email, 
         password
     });
-
     return res.render("home");
 }
 
@@ -19,7 +18,7 @@ async function handleUserLogin(req, res) {
     if(!user) {
         return res.render("login", {
             error:"Invalid username or password"
-        })
+        });
     }
     const sessionId = uuidv4();
     setUser(sessionId, user);
