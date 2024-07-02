@@ -6,32 +6,33 @@ const URL = require("./models/url")
 const urlRoute = require("./routes/url")
 const staticRoute = require("./routes/staticRouter");
 const userRoute = require("./routes/user");
-const { logReqRes, restricToLoggedInUserOnly } = require("./middlewares/index")
+const { logReqRes, restricToLoggedInUserOnly, checkAuth } = require("./middlewares/index")
 const { connectToMongoDb } = require("./dbConnection")
 
 const app = express();
 const PORT = 8001;
 
-//db connection
+//----------------------------------------------------------------------------DB connection----------------------------------------------------------------------------
 connectToMongoDb("mongodb://127.0.0.1:27017/short-url").then(() => {
     console.log("MongoDB connected successfully");
 });
 
-//middlewares
+//----------------------------------------------------------------------------Middlewares------------------------------------------------------------------------------
 app.use(express.json()); //middleware to parse body
 app.use(express.urlencoded({extended :false})); //to parse form data
 app.use(logReqRes("serverlog.txt"));
 app.use(cookieParser());
 
-//EJS setup
+//----------------------------------------------------------------------------EJS and views setup----------------------------------------------------------------------
 app.set('view engine', 'ejs');
 app.set('views', path.resolve("./views"));
 
-//Route linking
+//----------------------------------------------------------------------------Route linking----------------------------------------------------------------------------
 app.use("/url",restricToLoggedInUserOnly, urlRoute);
-app.use("/", staticRoute);
+app.use("/", checkAuth, staticRoute);
 app.use("/user", userRoute);
 
+//----------------------------------------------------------------------------GET route to redirect to original URL----------------------------------------------------
 app.get("/:shortId" , async (req,res) => {
     const shortId = req.params.shortId;
     const entry = await URL.findOneAndUpdate(

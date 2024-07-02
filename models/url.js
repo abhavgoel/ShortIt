@@ -11,8 +11,13 @@ const urlSchema = new mongoose.Schema({
         required: true
     },
     visitHistory : [{timestamp: {type: Number}}],
+    
+    createdBy :{ // linking users document with links, so that we can reference only user specific links
+        type: mongoose.Schema.Types.ObjectId,
+        ref : "users"
+    }
 }, 
-{timestamps : true}
+    {timestamps : true}
 
 );
 
