@@ -12,6 +12,7 @@
     "cookie-parser": "^1.4.6",
     "ejs": "^3.1.10",
     "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.4.4",
     "nanoid": "^5.0.7",
     "nodemon": "^3.1.4",

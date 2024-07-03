@@ -6,7 +6,7 @@ const URL = require("./models/url")
 const urlRoute = require("./routes/url")
 const staticRoute = require("./routes/staticRouter");
 const userRoute = require("./routes/user");
-const { logReqRes, restricToLoggedInUserOnly, checkAuth } = require("./middlewares/index")
+const { logReqRes, checkForAuthentication, restrictTo } = require("./middlewares/index")
 const { connectToMongoDb } = require("./dbConnection")
 
 const app = express();
@@ -22,15 +22,17 @@ app.use(express.json()); //middleware to parse body
 app.use(express.urlencoded({extended :false})); //to parse form data
 app.use(logReqRes("serverlog.txt"));
 app.use(cookieParser());
+app.use(checkForAuthentication) // we need authentication always
 
 //----------------------------------------------------------------------------EJS and views setup----------------------------------------------------------------------
 app.set('view engine', 'ejs');
 app.set('views', path.resolve("./views"));
 
 //----------------------------------------------------------------------------Route linking----------------------------------------------------------------------------
-app.use("/url",restricToLoggedInUserOnly, urlRoute);
-app.use("/", checkAuth, staticRoute);
+app.use("/url", restrictTo(["NORMAL", "ADMIN"]), urlRoute);
 app.use("/user", userRoute);
+app.use("/", staticRoute);
+
 
 //The order here matters, to specify the routes. If I define the below route above, it will clash - if I send a request to localhost/login if this route was specified above
 //then the server will log it as a request to shortened URL, so this should stay below all other routes

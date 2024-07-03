@@ -13,28 +13,34 @@ function logReqRes(filename) {
     }
 }
 
-async function restricToLoggedInUserOnly(req,res,next) {
-    const userUid = req.cookies.uid;
-    if(!userUid) return res.redirect("/login");
-    
-    const user = getUser(userUid);
-    if(!user) return res.redirect("/login");
+function checkForAuthentication(req, res, next) {
+    const tokenCookie = req.cookies.token;
+
+    req.user = null;
+
+    if(!tokenCookie) return next();
+
+    const token = tokenCookie;
+    const user = getUser(token);
 
     req.user = user;
+
     next();
+
 }
 
-async function checkAuth(req,res,next) {//using it to attach user to the reqesut and pass it forward
-    const userUid = req.cookies.uid;
-   
-    const user = getUser(userUid);
+function restrictTo(roles = []) {
+    return function(req,res,next) {
+        if(!req.user) return res.redirect("/login");
 
-    req.user = user;
-    next();
+        if(!roles.includes(req.user.role)) return res.end("Unauthorized");
+
+        return next();
+    }
 }
 
 module.exports = {
     logReqRes,
-    restricToLoggedInUserOnly,
-    checkAuth
+    checkForAuthentication,
+    restrictTo
 }
